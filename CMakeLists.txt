@@ -24,6 +24,7 @@ add_executable(BadApple
     src/main.c
     src/window.c
     src/video.c
+    src/texture.c
 )
 
 target_include_directories(BadApple PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
