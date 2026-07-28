@@ -38,6 +38,7 @@ Window* window_create(const char* title) {
 
     window->handle = glfwCreateWindow(window->width, window->height, title, NULL, NULL);
     if (!window->handle) {
+        printf("Failed to create GLFW window\n");
         free(window);
         glfwTerminate();
         return NULL;
@@ -71,16 +72,22 @@ void window_destroy(Window* window) {
     free(window);
 }
 
-void window_clear(Window* window) {
+void window_begin_frame(Window* window) {
     if (!window) return;
 
-    glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.5f); // DEBUG: Should be set to 0 alpha
     glClear(GL_COLOR_BUFFER_BIT);
+}
 
+void window_end_frame(Window* window) {
     glfwSwapBuffers(window->handle);
     glfwPollEvents();
 }
 
 bool window_running(Window* window) {
     return !glfwWindowShouldClose(window->handle);
+}
+
+double window_get_time() {
+    return glfwGetTime();
 }
