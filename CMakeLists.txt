@@ -19,6 +19,7 @@ pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET
     libavutil
     libswscale
 )
+find_package(X11 REQUIRED)
 
 add_executable(BadApple
     src/main.c
@@ -27,11 +28,13 @@ add_executable(BadApple
     src/texture.c
     src/shader.c
     src/quad.c
+    src/capturer.c
 )
 
 target_include_directories(BadApple PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(BadApple PRIVATE glfw glad_gl_core_33 PkgConfig::FFMPEG)
-
+target_link_libraries(BadApple PRIVATE 
+    glfw glad_gl_core_33 PkgConfig::FFMPEG X11::X11 X11::Xext
+)
 
 # Copy the video file to the build directory
 add_custom_command(TARGET BadApple POST_BUILD
