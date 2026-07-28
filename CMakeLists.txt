@@ -25,6 +25,8 @@ add_executable(BadApple
     src/window.c
     src/video.c
     src/texture.c
+    src/shader.c
+    src/quad.c
 )
 
 target_include_directories(BadApple PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -35,5 +37,12 @@ target_link_libraries(BadApple PRIVATE glfw glad_gl_core_33 PkgConfig::FFMPEG)
 add_custom_command(TARGET BadApple POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     ${CMAKE_CURRENT_SOURCE_DIR}/video/badapple.mp4
-    $<TARGET_FILE_DIR:BadApple>
+    $<TARGET_FILE_DIR:BadApple>/video/badapple.mp4
+)
+
+# Copy all shader sources to the build dir
+add_custom_command(TARGET BadApple POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_CURRENT_SOURCE_DIR}/shaders
+    $<TARGET_FILE_DIR:BadApple>/shaders
 )
