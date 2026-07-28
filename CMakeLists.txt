@@ -9,7 +9,7 @@ set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
-include(cmake/glfw.cmake)
+include(cmake/sdl3.cmake)
 include(cmake/glad.cmake)
 
 find_package(PkgConfig REQUIRED)
@@ -33,7 +33,7 @@ add_executable(BadApple
 
 target_include_directories(BadApple PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(BadApple PRIVATE 
-    glfw glad_gl_core_33 PkgConfig::FFMPEG X11::X11 X11::Xext
+    SDL3::SDL3 glad_gl_core_33 PkgConfig::FFMPEG X11::X11 X11::Xext
 )
 
 # Copy the video file to the build directory
