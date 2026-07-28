@@ -16,4 +16,7 @@ void window_destroy(Window* window);
 
 double window_get_time();
 
+int window_width(Window* window);
+int window_height(Window* window);
+
 #endif

@@ -75,7 +75,7 @@ void window_destroy(Window* window) {
 void window_begin_frame(Window* window) {
     if (!window) return;
 
-    glClearColor(0.0f, 0.0f, 0.0f, 0.5f); // DEBUG: Should be set to 0 alpha
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
@@ -87,6 +87,9 @@ void window_end_frame(Window* window) {
 bool window_running(Window* window) {
     return !glfwWindowShouldClose(window->handle);
 }
+
+int window_width(Window* window) { return window ? window->width : 0; }
+int window_height(Window* window) { return window ? window->height : 0; }
 
 double window_get_time() {
     return glfwGetTime();
