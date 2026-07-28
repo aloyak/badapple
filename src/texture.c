@@ -9,7 +9,7 @@ struct Texture {
     int height;
 };
 
-Texture* create_texture(int width, int height) {
+Texture* texture_create(int width, int height) {
     Texture* t = calloc(1, sizeof(Texture));
     if (!t) return NULL;
 
@@ -17,9 +17,10 @@ Texture* create_texture(int width, int height) {
     t->height = height;
 
     glGenTextures(1, &t->id);
+    glBindTexture(GL_TEXTURE_2D, t->id);
 
-    glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //NOTE: Check for GL_NEAREST
-    glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //NOTE: Check for GL_NEAREST
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);

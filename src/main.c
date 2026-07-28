@@ -2,6 +2,7 @@
 #include "video.h"
 #include "texture.h"
 #include "shader.h"
+#include "quad.h"
 
 int main() {
     Window* window = window_create("Bad Apple");
@@ -23,8 +24,10 @@ int main() {
         return 1;
     }
 
+    Quad* quad = quad_create();
+
     shader_use(shader);
-    shader_set_int(shader, "frameTexture", 0);
+    shader_set_int(shader, "u_frameTexture", 0);
 
     while (window_running(window)) {
         window_begin_frame(window);
@@ -38,13 +41,14 @@ int main() {
 
         shader_use(shader);
         texture_bind(texture, 0);
-        //quad draw
+        quad_draw(quad);
 
         window_end_frame(window);
     
         if (video_finished(video)) break;
     }
     
+    quad_destroy(quad);
     shader_destroy(shader);
     texture_destroy(texture);
     video_close(video);
