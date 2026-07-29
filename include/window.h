@@ -23,4 +23,6 @@ int window_height(Window* window);
 // Used by the capturer so it can identify and exclude this window
 unsigned long window_native_id(Window* window);
 
+void window_passthrough(Window* window, bool enabled);
+
 #endif

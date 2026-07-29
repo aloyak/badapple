@@ -29,6 +29,9 @@
 #include <stdio.h>
 #include <string.h>
 
+// from window.c
+extern Window window_resolve_toplevel(Display* display, Window root, Window win);
+
 typedef struct {
     Window win;
     Pixmap pixmap;
@@ -134,6 +137,13 @@ Capturer* capturer_create(int width, int height, unsigned long own_id) {
 
     if (c->own_window == 0) {
         fprintf(stderr, "capturer: warning: no own_window_id given, our own window won't be excluded\n");
+    } else {
+        Window resolved = window_resolve_toplevel(c->display, c->root, c->own_window);
+        if (resolved != c->own_window) {
+            fprintf(stderr, "capturer: own window is reparented (0x%lx -> 0x%lx), excluding the top-level ancestor\n",
+            (unsigned long)c->own_window, (unsigned long)resolved);
+        }
+        c->own_window = resolved;
     }
 
     capturer_enumerate_windows(c);

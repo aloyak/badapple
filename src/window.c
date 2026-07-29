@@ -6,6 +6,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#define Window X11Window
+#include <X11/Xlib.h>
+#include <X11/extensions/shape.h>
+#undef Window
+
 struct Window {
     SDL_Window* handle;
     SDL_GLContext gl_context;
@@ -39,7 +44,8 @@ Window* window_create(const char* title) {
                             SDL_WINDOW_TRANSPARENT | 
                             SDL_WINDOW_BORDERLESS | // No title bar or borders
                             SDL_WINDOW_ALWAYS_ON_TOP | // Always on top
-                            SDL_WINDOW_NOT_FOCUSABLE; 
+                            SDL_WINDOW_NOT_FOCUSABLE | 
+                            SDL_WINDOW_FULLSCREEN;
 
     window->handle = SDL_CreateWindow(title, window->width, window->height, flags);
     if (!window->handle) {
@@ -49,7 +55,7 @@ Window* window_create(const char* title) {
         return NULL;
     }
 
-    SDL_SetWindowPosition(window->handle, 0, 0);
+    //SDL_SetWindowPosition(window->handle, 0, 0);
 
     window->gl_context = SDL_GL_CreateContext(window->handle);
     if (!window->gl_context) {
@@ -71,6 +77,8 @@ Window* window_create(const char* title) {
 
     SDL_GL_SetSwapInterval(1); // Enable VSync
     glViewport(0, 0, window->width, window->height);
+
+    SDL_SyncWindow(window->handle);
 
     return window;
 }
@@ -128,4 +136,64 @@ unsigned long window_native_id(Window* window) {
     // Only for X11 right now
     Sint64 xid = SDL_GetNumberProperty(props, SDL_PROP_WINDOW_X11_WINDOW_NUMBER, 0);
     return (unsigned long)xid;
+}
+
+// Loop up the window hierarchy to find the top-level ancestor of a given window
+X11Window window_resolve_toplevel(Display* display, X11Window root, X11Window win) {
+    X11Window current = win;
+
+    for (;;) {
+        X11Window root_return, parent_return;
+        X11Window* children = NULL;
+        unsigned int nchildren = 0;
+
+        if (!XQueryTree(display, current, &root_return, &parent_return, &children, &nchildren)) {
+            return current;
+        }
+        if (children) XFree(children);
+
+        if (parent_return == root || parent_return == 0) {
+            return current;
+        }
+        current = parent_return;
+    }
+}
+
+void window_passthrough(Window* window, bool enabled) {
+    if (!window || !window->handle) return;
+
+    SDL_PropertiesID props = SDL_GetWindowProperties(window->handle);
+    if (!props) return;
+    
+    Display* display = (Display*)SDL_GetPointerProperty(props, SDL_PROP_WINDOW_X11_DISPLAY_POINTER, NULL);
+    X11Window xid = (X11Window)SDL_GetNumberProperty(props, SDL_PROP_WINDOW_X11_WINDOW_NUMBER, 0);
+    if (!display || !xid) {
+        fprintf(stderr, "window: click-through requires the X11 backend\n");
+        return;
+    }
+
+    int event_base, error_base;
+    if (!XShapeQueryExtension(display, &event_base, &error_base)) {
+        fprintf(stderr, "window: XShape extension not available, can't set click-through\n");
+        return;
+    }
+
+    int screen = DefaultScreen(display);
+    X11Window root = RootWindow(display, screen);
+    X11Window toplevel = window_resolve_toplevel(display, root, xid);
+
+    if (enabled) {
+        XShapeCombineRectangles(display, toplevel, ShapeInput, 0, 0, NULL, 0, ShapeSet, 0);
+        if (toplevel != xid) {
+            XShapeCombineRectangles(display, xid, ShapeInput, 0, 0, NULL, 0, ShapeSet, 0);
+        }
+    } else {
+        XRectangle rect = { 0, 0, (unsigned short)window->width, (unsigned short)window->height };
+        XShapeCombineRectangles(display, toplevel, ShapeInput, 0, 0, &rect, 1, ShapeSet, 0);
+        if (toplevel != xid) {
+            XShapeCombineRectangles(display, xid, ShapeInput, 0, 0, &rect, 1, ShapeSet, 0);
+        }
+    }
+
+    XFlush(display);
 }
