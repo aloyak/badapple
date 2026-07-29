@@ -5,7 +5,7 @@
 
 typedef struct Capturer Capturer;
 
-Capturer* capturer_create(int width, int height);
+Capturer* capturer_create(int width, int height, unsigned long own_id);
 
 void capturer_capture(Capturer* capturer);
 Texture* capturer_texture(Capturer* capturer);

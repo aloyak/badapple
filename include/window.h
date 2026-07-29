@@ -19,4 +19,8 @@ double window_get_time();
 int window_width(Window* window);
 int window_height(Window* window);
 
+// Native X11 window XID for this window (0 on failure or non-X11 backends).
+// Used by the capturer so it can identify and exclude this window
+unsigned long window_native_id(Window* window);
+
 #endif

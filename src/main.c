@@ -9,7 +9,10 @@ int main() {
     Window* window = window_create("Bad Apple");
     if (!window) return 1;
 
-    Capturer* capturer = capturer_create(window_width(window), window_height(window));
+    Capturer* capturer = capturer_create(
+        window_width(window), window_height(window), window_native_id(window)
+    );
+    
     if (!capturer) {
         window_destroy(window);
         return 1;

@@ -33,7 +33,7 @@ add_executable(BadApple
 
 target_include_directories(BadApple PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(BadApple PRIVATE 
-    SDL3::SDL3 glad_gl_core_33 PkgConfig::FFMPEG X11::X11 X11::Xext
+    SDL3::SDL3 glad_gl_core_33 PkgConfig::FFMPEG X11::X11 X11::Xext X11::Xcomposite
 )
 
 # Copy the video file to the build directory

@@ -118,3 +118,14 @@ int window_height(Window* window) { return window ? window->height : 0; }
 double window_get_time() {
     return (double)SDL_GetPerformanceCounter() / (double)SDL_GetPerformanceFrequency();
 }
+
+unsigned long window_native_id(Window* window) {
+    if (!window || !window->handle) return 0;
+
+    SDL_PropertiesID props = SDL_GetWindowProperties(window->handle);
+    if (!props) return 0;
+
+    // Only for X11 right now
+    Sint64 xid = SDL_GetNumberProperty(props, SDL_PROP_WINDOW_X11_WINDOW_NUMBER, 0);
+    return (unsigned long)xid;
+}
