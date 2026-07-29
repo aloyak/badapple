@@ -1,4 +1,8 @@
-# Bad Apple!
+# Bad Apple!!
+
+<p align="center">
+  <img src="./preview.png" alt="Bad Apple" width="600"/>
+</p>
 
 ## Overview
 
