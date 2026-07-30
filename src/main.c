@@ -4,8 +4,23 @@
 #include "texture.h"
 #include "shader.h"
 #include "quad.h"
+#include "parser.h"
 
-int main() {
+static void print_usage() {
+    printf("Usage: BadApple [options]\n");
+    printf("Options:\n");
+    printf("  --help, -h          Show this help message\n");
+    printf("  --video <path>      Path to video file\n");
+    printf("  --fshader <path>    Path to fragment shader\n");
+    printf("  --vshader <path>    Path to vertex shader\n");
+}
+
+int main(int argc, char** argv) {
+    if (parse_flag(argc, argv, "--help") || parse_flag(argc, argv, "-h")) {
+        print_usage();
+        return 0;
+    }
+
     Window* window = window_create("Bad Apple");
     if (!window) return 1;
 
@@ -20,7 +35,9 @@ int main() {
         return 1;
     }
 
-    Video* video = video_open("video/badapple.mp4");
+    const char* video_path = parse_option(argc, argv, "--video");
+    if (!video_path) video_path = "video/badapple.mp4";
+    Video* video = video_open(video_path);
     if (!video) {
         window_destroy(window);
         capturer_destroy(capturer);
@@ -29,7 +46,12 @@ int main() {
 
     Texture* texture = texture_create(video_width(video), video_height(video), TEXTURE_FORMAT_RGB8);
 
-    Shader* shader = shader_create("shaders/vertex.glsl", "shaders/fragment.glsl");
+    const char* vshader_path = parse_option(argc, argv, "--vshader");
+    const char* fshader_path = parse_option(argc, argv, "--fshader");
+    if (!vshader_path) vshader_path = "shaders/vertex.glsl";
+    if (!fshader_path) fshader_path = "shaders/fragment.glsl";
+    
+    Shader* shader = shader_create(vshader_path, fshader_path);
     if (!shader) {
         texture_destroy(texture);
         video_close(video);
