@@ -1,7 +1,9 @@
 # Bad Apple!!
 
+https://www.youtube.com/watch?v=a1_1RXaRt74
+
 <p align="center">
-  <img src="./preview.png" alt="Bad Apple" width="600"/>
+  <img src="./preview.png" alt="Bad Apple" width="800"/>
 </p>
 
 ## Overview
@@ -30,7 +32,3 @@ chmod +x build.sh
 ./build.sh
 
 ```
-
-## Contributing
-
-Very much welcome!
