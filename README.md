@@ -16,7 +16,7 @@ OpenGL's shaders.
 
 ## Supported Platforms
 
-This project is currently only supported on **Linux** with **X11**. Expanding to other platforms is the current priority.
+This project is supported on Linux (With X11 or Wayland) and Windows
 
 ## Building
 
@@ -24,11 +24,28 @@ This project uses CMake as a build system. Requires **CMake 4.0 or higher**.
 
 Note that all dependencies are included with CMake's FetchContent module
 
-```sh
+If using **Linux**, you might want to check what backend you are running:
 
+```sh
+echo $XDG_SESSION_TYPE
+```
+
+### X11
+
+```sh
 git clone https://github.com/aloyak/badapple.git
 cd badapple
 chmod +x build.sh
-./build.sh
-
+./build.sh --x11
 ```
+
+### Wayland
+
+```sh
+# same as before
+./build.sh --wayland
+```
+
+### Windows
+
+Consider using Cmake GUI to configure and generate the project, the cmake configuration is already setup to recognize the windows platform and use the correct dependencies
