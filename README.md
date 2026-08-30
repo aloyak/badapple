@@ -16,7 +16,9 @@ OpenGL's shaders.
 
 ## Supported Platforms
 
-This project is supported on Linux (With X11 or Wayland) and Windows
+This project is supported on Linux with X11
+
+**Wayland and Windows are not yet implemented**
 
 ## Building
 
